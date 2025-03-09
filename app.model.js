@@ -49,6 +49,15 @@ module.exports.deleteAllTasks = function() {
   });
 };
 
+module.exports.getTaskList = function() {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT rowid, title, description, dueDate, category, priority, status FROM Tasks", [], (err, rows) => {
+      if (err) reject(err);
+      resolve(rows);
+    });
+  });
+};
+
 module.exports.getAllTasks = function() {
   return new Promise((resolve, reject) => {
     db.all("SELECT rowid, title, description, dueDate, category, priority, status FROM Tasks", [], (err, rows) => {

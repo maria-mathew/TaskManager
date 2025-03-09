@@ -23,28 +23,40 @@ app.post("/addtask", async function(req, res) {
   res.render("homepage", { tasks: categorizedTasks });
 });
 
-//show form to create task
-app.get("/addform", async function(req, res) {
-  const categorizedTasks = await Model.getAllTasks();
-  res.render("homepage", { addtask: true, tasks: categorizedTasks });
+//navigate to addform page to create task
+app.get('/addform', (req, res) => {
+  res.render('addform');
 });
 
 //update task
 app.post("/updatetask/:id", async function(req, res) {
-  await Model.updateTask(req.body, req.params.id);
-  const categorizedTasks = await Model.getAllTasks();
-  res.render("homepage", { tasks: categorizedTasks });
+  try {
+    await Model.updateTask(req.body, req.params.id);
+    //redirect to the main page after updating the task
+    res.redirect("/");
+  } catch (err) {
+    console.error("Error updating task:", err);
+  }
 });
 
-//show form to update task
+//navigate to upateform page to update the seleted task
 app.get("/updateform/:id", async function(req, res) {
-  const categorizedTasks = await Model.getAllTasks();
-  res.render("homepage", {
-    updatetask: true,
+
+  const allTasks = await Model.getAllTasks();
+  const task = allTasks.todo.concat(allTasks.inProgress, allTasks.completed)
+               .find(x => x.rowid == req.params.id);
+
+  //determine which status to be selected in the 'status' dropdown of the update form
+  const selectedNotStarted = task.status === "Not Started" ? "selected" : "";
+  const selectedInProgress = task.status === "In Progress" ? "selected" : "";
+  const selectedCompleted = task.status === "Completed" ? "selected" : "";
+
+  res.render("updateform", {
     updateid: req.params.id,
-    formdata: categorizedTasks.todo.concat(categorizedTasks.inProgress, categorizedTasks.completed)
-      .find(x => x.rowid == req.params.id),
-    tasks: categorizedTasks
+    formdata: task,
+    selectedNotStarted,
+    selectedInProgress,
+    selectedCompleted
   });
 });
 

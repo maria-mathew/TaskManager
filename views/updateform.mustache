@@ -50,7 +50,6 @@
       <div class="mb-3">
         <label for="dueDate" class="form-label">Due Date</label>
         <input type="date" class="form-control" name="dueDate" value="{{formdata.dueDate}}" id="dueDate" required>
-        <div id="dateError" class="text-danger mt-1 d-none">Due date must be in the future.</div>
       </div>
       <div class="mb-3">
         <label for="category" class="form-label">Category</label>
@@ -110,18 +109,6 @@
       valid = false;
     } else {
       descError.classList.add("d-none");
-    }
-
-    //validate if the date provided is not in the past
-    const dueDate = new Date(document.getElementById("dueDate").value);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const dateError = document.getElementById("dateError");
-    if (isNaN(dueDate) || dueDate <= today) {
-      dateError.classList.remove("d-none");
-      valid = false;
-    } else {
-      dateError.classList.add("d-none");
     }
 
     //do not submit form if the validations fail

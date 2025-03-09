@@ -31,13 +31,13 @@
 
   <div class="container mt-4">
     <h3 class="text-center">Update Task</h3>
-      <div class="text-center mt-2 mb-5">
+    <div class="text-center mt-2 mb-5">
       <a href="/" class="btn btn-dark">Go Back</a>
     </div>
 
     <!-------------- update task form  ------------->
     <form action="/updatetask/{{updateid}}" method="POST" class="p-4 border rounded bg-light" style="background-color: #f2f4f1 !important; width: 70%; margin: 0 auto;">
-    <div class="mb-3">
+      <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <input type="text" class="form-control" name="title" value="{{formdata.title}}" required>
       </div>
@@ -50,8 +50,25 @@
         <input type="date" class="form-control" name="dueDate" value="{{formdata.dueDate}}" required>
       </div>
       <div class="mb-3">
-        <label for="subject" class="form-label">Subject</label>
-        <input type="text" class="form-control" name="subject" value="{{formdata.subject}}" required>
+        <label for="category" class="form-label">Category</label>
+        <select class="form-select" name="category" required>
+          <option value="Education" {{selectedEducation}}>Education</option>
+          <option value="Health" {{selectedHealth}}>Health</option>
+          <option value="Social" {{selectedSocial}}>Social</option>
+          <option value="Work" {{selectedWork}}>Work</option>
+          <option value="Personal" {{selectedPersonal}}>Personal</option>
+          <option value="Travel" {{selectedTravel}}>Travel</option>
+          <option value="Shopping" {{selectedShopping}}>Shopping</option>
+          <option value="Family" {{selectedFamily}}>Family</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="priority" class="form-label">Priority</label>
+        <select class="form-select" name="priority" required>
+          <option value="High" {{selectedHigh}}>High</option>
+          <option value="Medium" {{selectedMedium}}>Medium</option>
+          <option value="Low" {{selectedLow}}>Low</option>
+        </select>
       </div>
       <div class="mb-3">
         <label for="status" class="form-label">Status</label>
@@ -61,7 +78,9 @@
           <option value="Completed" {{selectedCompleted}}>Completed</option>
         </select>
       </div>
-      <button type="submit" class="btn btn-primary w-100">Update Task</button>
+      <div class="d-flex justify-content-center mt-5">
+        <button type="submit" class="btn btn-dark" style="width: 40%">Update Task</button>
+      </div>
     </form>
   </div>
 

@@ -1,4 +1,6 @@
 const express = require("express");
+const { Parser } = require('json2csv');
+
 const app = express();
 
 const Model = require("./app.model.js");
@@ -16,55 +18,189 @@ app.use(express.json());
 
 app.use(express.static('public')); 
 
+//add task
 app.post("/addtask", async function(req, res) {
   await Model.addTask(req.body);
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  //redirect to the main page after updating the task
+  res.redirect("/");
 });
 
-//show form to create task
-app.get("/addform", async function(req, res) {
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { addtask: true, tasks: taskArray });
+//navigate to addform page to create task
+app.get('/addform', (req, res) => {
+  res.render('addform');
 });
 
 //update task
 app.post("/updatetask/:id", async function(req, res) {
-  await Model.updateTask(req.body, req.params.id);
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  try {
+    await Model.updateTask(req.body, req.params.id);
+    //redirect to the main page after updating the task
+    res.redirect("/");
+  } catch (err) {
+    console.error("Error updating task:", err);
+  }
 });
 
-//show form to update task
+//navigate to upateform page to update the seleted task
 app.get("/updateform/:id", async function(req, res) {
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", {
-    updatetask: true,
-    updateid: req.params.id,
-    formdata: taskArray.filter(x => x.rowid == req.params.id)[0],
-    tasks: taskArray
-  });
+  
+    const allTasks = await Model.getAllTasks();
+    const task = allTasks.todo.concat(allTasks.inProgress, allTasks.completed)
+                 .find(x => x.rowid == req.params.id);
+
+  //determine which category to be selected in the 'category' dropdown of the update form
+    const selectedEducation = task.category === "Education" ? "selected" : "";
+    const selectedHealth = task.category === "Health" ? "selected" : "";
+    const selectedSocial = task.category === "Social" ? "selected" : "";
+    const selectedWork = task.category === "Work" ? "selected" : "";
+    const selectedPersonal = task.category === "Personal" ? "selected" : "";
+    const selectedTravel = task.category === "Travel" ? "selected" : "";
+    const selectedShopping = task.category === "Shopping" ? "selected" : "";
+    const selectedFamily = task.category === "Family" ? "selected" : "";
+
+  //determine which priority to be selected in the 'priority' dropdown of the update form
+    const selectedHigh = task.priority === "High" ? "selected" : "";
+    const selectedMedium = task.priority === "Medium" ? "selected" : "";
+    const selectedLow = task.priority === "Low" ? "selected" : "";
+
+    //determine which status to be selected in the 'status' dropdown of the update form
+    const selectedNotStarted = task.status === "To-Do" ? "selected" : "";
+    const selectedInProgress = task.status === "In Progress" ? "selected" : "";
+    const selectedCompleted = task.status === "Completed" ? "selected" : "";
+
+    res.render("updateform", {
+      updateid: req.params.id,
+      formdata: task,
+      selectedEducation,
+      selectedHealth,
+      selectedSocial,
+      selectedWork,
+      selectedPersonal,
+      selectedTravel,
+      selectedShopping,
+      selectedFamily,
+      selectedHigh,
+      selectedMedium,
+      selectedLow,
+      selectedNotStarted,
+      selectedInProgress,
+      selectedCompleted
+    });
 });
 
 //delete task
 app.get("/deletetask/:id", async function(req, res) {
   await Model.deleteTask(req.params.id);
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  //redirect to the main page after updating the task
+  res.redirect("/");
 });
-
 
 //delete all tasks
 app.get("/deletealltasks", async function(req, res) {
   await Model.deleteAllTasks();
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  //redirect to the main page after updating the task
+  res.redirect("/");
 });
 
 //show all tasks
 app.get("/", async function(req, res) {
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+
+  //check if due date is in the past for incompleted tasks and mark them overdue
+  categorizedTasks.todo.forEach(task => {
+    task.isOverdue = new Date(task.dueDate) < new Date();
+    if(task.isOverdue == true){
+      task.title = task.title + " - Overdue";
+    }
+    else{
+      task.title = task.title
+    }
+  });
+  categorizedTasks.inProgress.forEach(task => {
+    task.isOverdue = new Date(task.dueDate) < new Date();
+    if(task.isOverdue == true){
+        task.title = task.title + " - Overdue";
+      }
+      else{
+        task.title = task.title
+      }
+  });
+  categorizedTasks.completed.forEach(task => {
+    task.title = task.title
+  });
+
+  res.render("homepage", { tasks: categorizedTasks });
+});
+
+//get all tasks based on the filter provided
+app.get("/tasks", async function(req, res) {
+  const { filterCategory, filterPriority, sortBy } = req.query;
+
+  let tasks = await Model.getTaskList();
+
+  //filter tasks
+  if (filterCategory) {
+    tasks = tasks.filter(task => task.category === filterCategory);
+  }
+  if (filterPriority) {
+    tasks = tasks.filter(task => task.priority === filterPriority);
+  }
+
+  //sort tasks
+  if (sortBy) {
+    tasks = tasks.sort((a, b) => {
+      if (sortBy === 'dueDate') {
+        return new Date(a.dueDate) - new Date(b.dueDate);
+      }
+      if (sortBy === 'priority') {
+        const priorities = { 'High': 1, 'Medium': 2, 'Low': 3 };
+        return priorities[a.priority] - priorities[b.priority];
+      }
+      return 0;
+    });
+  }
+
+  tasks.forEach(task => {
+    if(task.status != "Completed"){
+      task.isOverdue = new Date(task.dueDate) < new Date();
+      if(task.isOverdue == true){
+          task.title = task.title + " - Overdue";
+        }
+        else{
+          task.title = task.title
+        }
+    }
+  });
+
+  res.render("tasklist", { tasks: tasks });
+});
+
+//export list into a csv file
+app.get("/exportcsv", async (req, res) => {
+  try {
+    const tasks = await Model.getTaskList();
+
+    if (!tasks || tasks.length === 0) {
+      return res.status(400).send("No tasks to export.");
+    }
+
+    //defines the field name for the csv file columns
+    const fields = ["title", "description", "dueDate", "category", "priority", "status"];
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(tasks);
+
+    //set response headers
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=tasks.csv");
+    
+    res.send(csv);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error generating CSV file.");
+  }
 });
 
 //start the server

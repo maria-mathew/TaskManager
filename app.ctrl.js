@@ -20,7 +20,8 @@ app.use(express.static('public'));
 app.post("/addtask", async function(req, res) {
   await Model.addTask(req.body);
   const categorizedTasks = await Model.getAllTasks();
-  res.render("homepage", { tasks: categorizedTasks });
+  //redirect to the main page after updating the task
+  res.redirect("/");
 });
 
 //navigate to addform page to create task
@@ -64,14 +65,16 @@ app.get("/updateform/:id", async function(req, res) {
 app.get("/deletetask/:id", async function(req, res) {
   await Model.deleteTask(req.params.id);
   const categorizedTasks = await Model.getAllTasks();
-  res.render("homepage", { tasks: categorizedTasks });
+  //redirect to the main page after updating the task
+  res.redirect("/");
 });
 
 //delete all tasks
 app.get("/deletealltasks", async function(req, res) {
   await Model.deleteAllTasks();
   const categorizedTasks = await Model.getAllTasks();
-  res.render("homepage", { tasks: categorizedTasks });
+  //redirect to the main page after updating the task
+  res.redirect("/");
 });
 
 //show all tasks

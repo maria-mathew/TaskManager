@@ -16,13 +16,13 @@ db.serialize(function() {
   `);
 
   db.run("INSERT INTO Tasks (title, description, dueDate, subject, status) VALUES (?,?,?,?,?)", 
-    ['Math Assignment 1', 'Solve the problems on page 24', '2025-03-10', 'Mathematics', 'Not Started']);
+    ['Math Assignment 1', 'Solve the problems on page 24', '2025-03-10', 'Mathematics', 'To-Do']);
   db.run("INSERT INTO Tasks (title, description, dueDate, subject, status) VALUES (?,?,?,?,?)", 
     ['History Project', 'Research on ancient civilizations', '2025-03-15', 'History', 'In Progress']);
   db.run("INSERT INTO Tasks (title, description, dueDate, subject, status) VALUES (?,?,?,?,?)", 
     ['English Essay', 'Write an essay on your favorite book', '2025-03-20', 'English', 'Completed']);
   db.run("INSERT INTO Tasks (title, description, dueDate, subject, status) VALUES (?,?,?,?,?)", 
-    ['Science Lab Report', 'Complete the lab report for experiment 3', '2025-03-25', 'Science', 'Not Started']);
+    ['Science Lab Report', 'Complete the lab report for experiment 3', '2025-03-25', 'Science', 'To-Do']);
   db.run("INSERT INTO Tasks (title, description, dueDate, subject, status) VALUES (?,?,?,?,?)", 
     ['Computer Science Homework', 'Code the final project in Python', '2025-03-30', 'Computer Science', 'In Progress']);
 

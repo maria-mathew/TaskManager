@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background-color: #dee2dc;">
+
+  <!-------------- navigation bar ------------->
+  <nav class="navbar navbar-expand-md navbar-dark" style="background-color: #4a5444;">
+    <div class="container-fluid">
+      <a class="navbar-brand text-white" href="/">Task Manager Application</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item me-2">
+            <a class="nav-link text-white btn btn-dark" href="/">Home</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+
+   <h3 class="text-center">Task List</h3>
+    <div class="text-center mt-2 mb-5">
+      <a href="/" class="btn btn-dark">Go Back</a>
+    </div>
+    
+    <!-------------- form to filter and sort  ------------->
+    <form method="GET" action="/tasks" class="mb-4" id="filterForm">
+    <div class="row">
+      <div class="col-md-3">
+        <select name="filterCategory" class="form-select" aria-label="Category Filter">
+          <option value="">Filter by Category</option>
+          <option value="Education">Education</option>
+          <option value="Health">Health</option>
+          <option value="Social">Social</option>
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Travel">Travel</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Family">Family</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="filterPriority" class="form-select" aria-label="Priority Filter">
+          <option value="">Filter by Priority</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="sortBy" class="form-select" aria-label="Sort By">
+          <option value="">Sort By</option>
+          <option value="dueDate">Due Date</option>
+          <option value="priority">Priority</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex justify-content-between">
+        <button type="submit" class="btn btn-dark" style="width: 48%">Apply</button>
+        <button type="button" class="btn btn-secondary" style="width: 48%" onclick="clearFilters()">Clear Filters</button>
+      </div>
+    </div>
+  </form>
+
+    <!-------------- table to show task list  ------------->
+    <table class="table table-bordered mt-4">
+      <thead class="thead-dark">
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Category</th>
+          <th>Priority</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#tasks}}
+        <tr>
+          <td>{{title}}</td>
+          <td>{{description}}</td>
+          <td>{{dueDate}}</td>
+          <td>{{category}}</td>
+          <td>{{priority}}</td>
+          <td>{{status}}</td>
+        </tr>
+        {{/tasks}}
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function clearFilters() {
+      document.getElementById('filterForm').reset();
+      window.location.href = "/tasks";
+    }
+  </script>
+</body>
+</html>

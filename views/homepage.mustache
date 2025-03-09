@@ -1,130 +1,119 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Task Manager Application</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    td, th, table { border: 1px solid black; }
-    td, th { padding: 5px; }
-    table { border-collapse: collapse; }
-
-    .task-column {
-      display: inline-block;
-      width: 30%;
-      padding: 10px;
-      vertical-align: top;
-      box-sizing: border-box;
-    }
-
     .task-tile { 
-      border: 1px solid #ddd; 
-      padding: 10px; 
-      margin-bottom: 10px; 
-      background-color: #f9f9f9; 
-    }
-
+    border: 1px solid #ddd; 
+    padding: 15px; 
+    margin-bottom: 15px; 
+    background-color: #f2f4f1; 
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+  }
     .task-title { font-weight: bold; }
-    .task-actions a { margin-right: 10px; }
-
-    @media (max-width: 768px) {
-      .task-column {
-        width: 100%;
-        display: block;
-      }
-      .task-column h3 {
-        text-align: center;
-      }
+    .task-tile p {
+      margin-bottom: 5px;
+    }
+    .btn-container {
+      margin-top: auto;
     }
   </style>
 </head>
-<body>
-  <h1>Task Manager Application</h1>
 
-  <h2>Task records</h2>
+<body style="background-color: #dee2dc;">
 
-  <div class="task-column">
-    <h3>To-do</h3>
-    {{#tasks.todo}}
-      <div class="task-tile">
-        <div class="task-title">{{title}}</div>
-        <div>{{description}}</div>
-        <div>Due Date: {{dueDate}}</div>
-        <div>Subject: {{subject}}</div>
-        <div>Status: {{status}}</div>
-        <div class="task-actions">
-          <a href="/deletetask/{{rowid}}">Delete</a>
-          <a href="/updateform/{{rowid}}">Update</a>
-        </div>
+  <!-------------- navigation bar ------------->
+  <nav class="navbar navbar-expand-md navbar-dark" style="background-color: #4a5444;">
+    <div class="container-fluid">
+      <a class="navbar-brand text-white" href="#">Task Manager Application</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item me-2">
+            <a class="nav-link text-white btn btn-dark" href="/addform">Create Task</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white btn btn-dark" href="/">Tasks List View Tasks</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white btn btn-dark" href="/deletealltasks">Delete All Tasks</a>
+          </li>
+        </ul>
       </div>
-    {{/tasks.todo}}
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h3 class="text-center mb-5">Tasks By Status</h3>
+
+    <!------------------ to do task list ---------------->
+    <div class="row">
+      <div class="col-md-4">
+        <h5 class="text-center">To-do</h5>
+        {{#tasks.todo}}
+          <div class="task-tile">
+            <div class="task-title">{{title}}</div>
+            <div class="mb-1">{{description}}</div>
+            <hr class="my-2">   
+            <div>Due Date: {{dueDate}}</div>
+            <div>Subject: {{subject}}</div>
+            <div>Status: {{status}}</div>
+            <div class="btn-container d-flex justify-content-end">
+              <a href="/deletetask/{{rowid}}" class="btn btn-dark btn-sm me-2">Delete</a>
+              <a href="/updateform/{{rowid}}" class="btn btn-dark btn-sm">Update</a>
+            </div>
+          </div>
+        {{/tasks.todo}}
+      </div>
+      
+      <!------------------ inprogress task list ---------------->
+      <div class="col-md-4">
+        <h5 class="text-center">In Progress</h5>
+        {{#tasks.inProgress}}
+          <div class="task-tile">
+            <div class="task-title">{{title}}</div>
+            <div class="mb-1">{{description}}</div>
+            <hr class="my-2">   
+            <div>Due Date: {{dueDate}}</div>
+            <div>Subject: {{subject}}</div>
+            <div>Status: {{status}}</div>
+            <div class="btn-container d-flex justify-content-end">
+              <a href="/deletetask/{{rowid}}" class="btn btn-dark btn-sm me-2">Delete</a>
+              <a href="/updateform/{{rowid}}" class="btn btn-dark btn-sm">Update</a>
+            </div>
+          </div>
+        {{/tasks.inProgress}}
+      </div>
+      
+      <!------------------ completed task list ---------------->
+      <div class="col-md-4">
+        <h5 class="text-center">Completed</h5>
+        {{#tasks.completed}}
+          <div class="task-tile">
+            <div class="task-title">{{title}}</div>
+            <div class="mb-1">{{description}}</div>  
+            <hr class="my-2">           
+            <div>Due Date: {{dueDate}}</div>
+            <div>Subject: {{subject}}</div>
+            <div>Status: {{status}}</div>
+            <div class="btn-container d-flex justify-content-end">
+              <a href="/deletetask/{{rowid}}" class="btn btn-dark btn-sm me-2">Delete</a>
+              <a href="/updateform/{{rowid}}" class="btn btn-dark btn-sm">Update</a>
+            </div>
+          </div>
+        {{/tasks.completed}}
+      </div>
+    </div>
   </div>
 
-  <div class="task-column">
-    <h3>In Progress</h3>
-    {{#tasks.inProgress}}
-      <div class="task-tile">
-        <div class="task-title">{{title}}</div>
-        <div>{{description}}</div>
-        <div>Due Date: {{dueDate}}</div>
-        <div>Subject: {{subject}}</div>
-        <div>Status: {{status}}</div>
-        <div class="task-actions">
-          <a href="/deletetask/{{rowid}}">Delete</a>
-          <a href="/updateform/{{rowid}}">Update</a>
-        </div>
-      </div>
-    {{/tasks.inProgress}}
-  </div>
-
-  <div class="task-column">
-    <h3>Completed</h3>
-    {{#tasks.completed}}
-      <div class="task-tile">
-        <div class="task-title">{{title}}</div>
-        <div>{{description}}</div>
-        <div>Due Date: {{dueDate}}</div>
-        <div>Subject: {{subject}}</div>
-        <div>Status: {{status}}</div>
-        <div class="task-actions">
-          <a href="/deletetask/{{rowid}}">Delete</a>
-          <a href="/updateform/{{rowid}}">Update</a>
-        </div>
-      </div>
-    {{/tasks.completed}}
-  </div>
-
-
-  <p><a href="/addform">Add Task</a></p>
-  <p><a href="/deletealltasks">Delete all tasks</a></p>
-
-  {{#addtask}}
-    <form action="/addtask" method="POST">
-      <label for="title">Title</label>
-      <input type="text" name="title"> <br /> 
-      <label for="description">Description</label>
-      <input type="text" name="description"> <br /> 
-      <label for="dueDate">Due Date</label>
-      <input type="text" name="dueDate"> <br /> 
-      <label for="subject">Subject</label>
-      <input type="text" name="subject"> <br />
-      <input type="submit" />
-    </form>
-  {{/addtask}}
-
-  {{#updatetask}}
-    <form action="/updatetask/{{updateid}}" method="POST">
-      <label for="title">Title</label>
-      <input type="text" name="title" value="{{formdata.title}}"> <br /> 
-      <label for="description">Description</label>
-      <input type="text" name="description" value="{{formdata.description}}"> <br /> 
-      <label for="dueDate">Due Date</label>
-      <input type="text" name="dueDate" value="{{formdata.dueDate}}"> <br /> 
-      <label for="subject">Subject</label>
-      <input type="text" name="subject" value="{{formdata.subject}}"> <br />
-      <label for="status">Status</label>
-      <input type="text" name="status" value="{{formdata.status}}"> <br /> 
-      <input type="submit" />
-    </form>
-  {{/updatetask}}
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

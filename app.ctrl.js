@@ -16,55 +16,56 @@ app.use(express.json());
 
 app.use(express.static('public')); 
 
+//add task
 app.post("/addtask", async function(req, res) {
   await Model.addTask(req.body);
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  res.render("homepage", { tasks: categorizedTasks });
 });
 
 //show form to create task
 app.get("/addform", async function(req, res) {
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { addtask: true, tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  res.render("homepage", { addtask: true, tasks: categorizedTasks });
 });
 
 //update task
 app.post("/updatetask/:id", async function(req, res) {
   await Model.updateTask(req.body, req.params.id);
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  res.render("homepage", { tasks: categorizedTasks });
 });
 
 //show form to update task
 app.get("/updateform/:id", async function(req, res) {
-  const taskArray = await Model.getAllTasks();
+  const categorizedTasks = await Model.getAllTasks();
   res.render("homepage", {
     updatetask: true,
     updateid: req.params.id,
-    formdata: taskArray.filter(x => x.rowid == req.params.id)[0],
-    tasks: taskArray
+    formdata: categorizedTasks.todo.concat(categorizedTasks.inProgress, categorizedTasks.completed)
+      .find(x => x.rowid == req.params.id),
+    tasks: categorizedTasks
   });
 });
 
 //delete task
 app.get("/deletetask/:id", async function(req, res) {
   await Model.deleteTask(req.params.id);
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  res.render("homepage", { tasks: categorizedTasks });
 });
-
 
 //delete all tasks
 app.get("/deletealltasks", async function(req, res) {
   await Model.deleteAllTasks();
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  res.render("homepage", { tasks: categorizedTasks });
 });
 
 //show all tasks
 app.get("/", async function(req, res) {
-  const taskArray = await Model.getAllTasks();
-  res.render("homepage", { tasks: taskArray });
+  const categorizedTasks = await Model.getAllTasks();
+  res.render("homepage", { tasks: categorizedTasks });
 });
 
 //start the server

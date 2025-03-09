@@ -1,4 +1,6 @@
 const express = require("express");
+const { Parser } = require('json2csv');
+
 const app = express();
 
 const Model = require("./app.model.js");
@@ -174,6 +176,31 @@ app.get("/tasks", async function(req, res) {
   });
 
   res.render("tasklist", { tasks: tasks });
+});
+
+//export list into a csv file
+app.get("/exportcsv", async (req, res) => {
+  try {
+    const tasks = await Model.getTaskList();
+
+    if (!tasks || tasks.length === 0) {
+      return res.status(400).send("No tasks to export.");
+    }
+
+    //defines the field name for the csv file columns
+    const fields = ["title", "description", "dueDate", "category", "priority", "status"];
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(tasks);
+
+    //set response headers
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=tasks.csv");
+    
+    res.send(csv);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error generating CSV file.");
+  }
 });
 
 //start the server

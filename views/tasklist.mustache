@@ -86,7 +86,9 @@
       <tbody>
         {{#tasks}}
         <tr>
-          <td>{{title}}</td>
+          <td>
+            <span style="color: {{#isOverdue}}red{{/isOverdue}};">{{title}}</span>
+          </td>
           <td>{{description}}</td>
           <td>{{dueDate}}</td>
           <td>{{category}}</td>

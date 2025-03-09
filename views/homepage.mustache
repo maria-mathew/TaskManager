@@ -60,7 +60,9 @@
         <h5 class="text-center">To-do</h5>
         {{#tasks.todo}}
           <div class="task-tile">
-            <div class="task-title">{{title}}</div>
+            <div class="task-title" style="color: {{#isOverdue}}red{{/isOverdue}}{{^isOverdue}}black{{/isOverdue}}">
+              {{title}}
+            </div>
             <div class="mb-1">{{description}}</div>
             <hr class="my-2">   
             <div>Due Date: {{dueDate}}</div>
@@ -80,7 +82,9 @@
         <h5 class="text-center">In Progress</h5>
         {{#tasks.inProgress}}
           <div class="task-tile">
-            <div class="task-title">{{title}}</div>
+            <div class="task-title" style="color: {{#isOverdue}}red{{/isOverdue}}{{^isOverdue}}black{{/isOverdue}}">
+              {{title}}
+            </div>
             <div class="mb-1">{{description}}</div>
             <hr class="my-2">   
             <div>Due Date: {{dueDate}}</div>
@@ -100,7 +104,9 @@
         <h5 class="text-center">Completed</h5>
         {{#tasks.completed}}
           <div class="task-tile">
-            <div class="task-title">{{title}}</div>
+            <div class="task-title" style="color: {{#isOverdue}}red{{/isOverdue}};">
+              {{title}}
+            </div>
             <div class="mb-1">{{description}}</div>  
             <hr class="my-2">           
             <div>Due Date: {{dueDate}}</div>

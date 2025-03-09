@@ -106,6 +106,30 @@ app.get("/deletealltasks", async function(req, res) {
 //show all tasks
 app.get("/", async function(req, res) {
   const categorizedTasks = await Model.getAllTasks();
+
+  //check if due date is in the past for incompleted tasks and mark them overdue
+  categorizedTasks.todo.forEach(task => {
+    task.isOverdue = new Date(task.dueDate) < new Date();
+    if(task.isOverdue == true){
+      task.title = task.title + " - Overdue";
+    }
+    else{
+      task.title = task.title
+    }
+  });
+  categorizedTasks.inProgress.forEach(task => {
+    task.isOverdue = new Date(task.dueDate) < new Date();
+    if(task.isOverdue == true){
+        task.title = task.title + " - Overdue";
+      }
+      else{
+        task.title = task.title
+      }
+  });
+  categorizedTasks.completed.forEach(task => {
+    task.title = task.title
+  });
+
   res.render("homepage", { tasks: categorizedTasks });
 });
 
@@ -136,6 +160,19 @@ app.get("/tasks", async function(req, res) {
       return 0;
     });
   }
+
+  tasks.forEach(task => {
+    if(task.status != "Completed"){
+      task.isOverdue = new Date(task.dueDate) < new Date();
+      if(task.isOverdue == true){
+          task.title = task.title + " - Overdue";
+        }
+        else{
+          task.title = task.title
+        }
+    }
+  });
+
   res.render("tasklist", { tasks: tasks });
 });
 

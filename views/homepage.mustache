@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Manager Application</title>
+  <style>
+    td, th, table { border: 1px solid black; }
+    td, th { padding: 5px; }
+    table { border-collapse: collapse; }
+  </style>
+</head>
+<body>
+  <h1>Task Manager Application</h1>
+
+  <h2>Task records</h2> 
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Due Date</th>
+      <th>Subject</th>
+      <th>Status</th>
+      <th>Delete</th>
+      <th>Update</th>
+    </tr>
+    {{#tasks}}
+      <tr>
+        <td>{{rowid}}</td>
+        <td>{{title}}</td>
+        <td>{{description}}</td>
+        <td>{{dueDate}}</td>
+        <td>{{subject}}</td>
+        <td>{{status}}</td>
+        <td><a href="/deletetask/{{rowid}}">D</a></td> 
+        <td><a href="/updateform/{{rowid}}">U</a></td> 
+      </tr>
+    {{/tasks}}
+  </table>
+
+  <p><a href="/addform">Add Task</a></p>
+  <p><a href="/deletealltasks">Delete all tasks</a></p>
+
+  {{#addtask}}
+    <form action="/addtask" method="POST">
+      <label for="title">Title</label>
+      <input type="text" name="title"> <br /> 
+      <label for="description">Description</label>
+      <input type="text" name="description"> <br /> 
+      <label for="dueDate">Due Date</label>
+      <input type="text" name="dueDate"> <br /> 
+      <label for="subject">Subject</label>
+      <input type="text" name="subject"> <br />
+      <label for="status">Status</label>
+      <input type="text" name="status"> <br /> 
+      <input type="submit" />
+    </form>
+  {{/addtask}}
+
+  {{#updatetask}}
+    <form action="/updatetask/{{updateid}}" method="POST">
+      <label for="title">Title</label>
+      <input type="text" name="title" value="{{formdata.title}}"> <br /> 
+      <label for="description">Description</label>
+      <input type="text" name="description" value="{{formdata.description}}"> <br /> 
+      <label for="dueDate">Due Date</label>
+      <input type="text" name="dueDate" value="{{formdata.dueDate}}"> <br /> 
+      <label for="subject">Subject</label>
+      <input type="text" name="subject" value="{{formdata.subject}}"> <br />
+      <label for="status">Status</label>
+      <input type="text" name="status" value="{{formdata.status}}"> <br /> 
+      <input type="submit" />
+    </form>
+  {{/updatetask}}
+</body>
+</html>

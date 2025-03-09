@@ -42,23 +42,49 @@ app.post("/updatetask/:id", async function(req, res) {
 
 //navigate to upateform page to update the seleted task
 app.get("/updateform/:id", async function(req, res) {
+  
+    const allTasks = await Model.getAllTasks();
+    const task = allTasks.todo.concat(allTasks.inProgress, allTasks.completed)
+                 .find(x => x.rowid == req.params.id);
 
-  const allTasks = await Model.getAllTasks();
-  const task = allTasks.todo.concat(allTasks.inProgress, allTasks.completed)
-               .find(x => x.rowid == req.params.id);
+  //determine which category to be selected in the 'category' dropdown of the update form
+    const selectedEducation = task.category === "Education" ? "selected" : "";
+    const selectedHealth = task.category === "Health" ? "selected" : "";
+    const selectedSocial = task.category === "Social" ? "selected" : "";
+    const selectedWork = task.category === "Work" ? "selected" : "";
+    const selectedPersonal = task.category === "Personal" ? "selected" : "";
+    const selectedTravel = task.category === "Travel" ? "selected" : "";
+    const selectedShopping = task.category === "Shopping" ? "selected" : "";
+    const selectedFamily = task.category === "Family" ? "selected" : "";
 
-  //determine which status to be selected in the 'status' dropdown of the update form
-  const selectedNotStarted = task.status === "Not Started" ? "selected" : "";
-  const selectedInProgress = task.status === "In Progress" ? "selected" : "";
-  const selectedCompleted = task.status === "Completed" ? "selected" : "";
+  //determine which priority to be selected in the 'priority' dropdown of the update form
+    const selectedHigh = task.priority === "High" ? "selected" : "";
+    const selectedMedium = task.priority === "Medium" ? "selected" : "";
+    const selectedLow = task.priority === "Low" ? "selected" : "";
 
-  res.render("updateform", {
-    updateid: req.params.id,
-    formdata: task,
-    selectedNotStarted,
-    selectedInProgress,
-    selectedCompleted
-  });
+    //determine which status to be selected in the 'status' dropdown of the update form
+    const selectedNotStarted = task.status === "To-Do" ? "selected" : "";
+    const selectedInProgress = task.status === "In Progress" ? "selected" : "";
+    const selectedCompleted = task.status === "Completed" ? "selected" : "";
+
+    res.render("updateform", {
+      updateid: req.params.id,
+      formdata: task,
+      selectedEducation,
+      selectedHealth,
+      selectedSocial,
+      selectedWork,
+      selectedPersonal,
+      selectedTravel,
+      selectedShopping,
+      selectedFamily,
+      selectedHigh,
+      selectedMedium,
+      selectedLow,
+      selectedNotStarted,
+      selectedInProgress,
+      selectedCompleted
+    });
 });
 
 //delete task

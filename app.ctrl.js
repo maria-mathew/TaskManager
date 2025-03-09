@@ -109,6 +109,36 @@ app.get("/", async function(req, res) {
   res.render("homepage", { tasks: categorizedTasks });
 });
 
+//get all tasks based on the filter provided
+app.get("/tasks", async function(req, res) {
+  const { filterCategory, filterPriority, sortBy } = req.query;
+
+  let tasks = await Model.getTaskList();
+
+  //filter tasks
+  if (filterCategory) {
+    tasks = tasks.filter(task => task.category === filterCategory);
+  }
+  if (filterPriority) {
+    tasks = tasks.filter(task => task.priority === filterPriority);
+  }
+
+  //sort tasks
+  if (sortBy) {
+    tasks = tasks.sort((a, b) => {
+      if (sortBy === 'dueDate') {
+        return new Date(a.dueDate) - new Date(b.dueDate);
+      }
+      if (sortBy === 'priority') {
+        const priorities = { 'High': 1, 'Medium': 2, 'Low': 3 };
+        return priorities[a.priority] - priorities[b.priority];
+      }
+      return 0;
+    });
+  }
+  res.render("tasklist", { tasks: tasks });
+});
+
 //start the server
 app.listen(3000, function() {
   console.log("Server listening on port 3000...");

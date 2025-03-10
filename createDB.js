@@ -19,7 +19,7 @@ db.serialize(function() {
   db.run("INSERT INTO Tasks (title, description, dueDate, category, priority, status) VALUES (?,?,?,?,?,?)", 
     ['Math Assignment 1', 'Solve the problems on page 24', '2025-04-10', 'Education', 'High', 'To-Do']);
   db.run("INSERT INTO Tasks (title, description, dueDate, category, priority, status) VALUES (?,?,?,?,?,?)", 
-    ['History Project', 'Research on ancient civilizations', '2025-03-15', 'Education', 'Medium', 'In Progress']);
+    ['History Project', 'Research on ancient civilizations', '2025-03-8', 'Education', 'Medium', 'In Progress']);
   db.run("INSERT INTO Tasks (title, description, dueDate, category, priority, status) VALUES (?,?,?,?,?,?)", 
     ['Grocery Shopping', 'Buy vegetables, fruits, and dairy products', '2025-04-07', 'Personal', 'Medium', 'To-Do']);
   db.run("INSERT INTO Tasks (title, description, dueDate, category, priority, status) VALUES (?,?,?,?,?,?)", 

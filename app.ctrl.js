@@ -20,15 +20,72 @@ app.use(express.static('public'));
 
 //add task
 app.post("/addtask", async function(req, res) {
+  const errors = {};
+
+  // validate form
+  //1. title
+  const title = req.body.title.trim();
+  if(title == ""){
+    errors.title = "Title is a required field.";
+  }
+  else if (title.length < 3) {
+    errors.title = "Title must be at least 3 characters.";
+  }
+  //2. title
+  const description = req.body.description;
+  if (description.length > 500) {
+    errors.description = "Description cannot exceed 500 characters.";
+  }
+  //3. due date
+  const dueDate = new Date(req.body.dueDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if(dueDate == ""){
+    errors.dueDate = "Due date is a required field.";
+  }
+  else if (isNaN(dueDate) || dueDate <= today) {
+    errors.dueDate = "Due date must be a future date.";
+  }
+
+  //if there are errors return them to the front-end along with the form data enetered by user
+  if (Object.keys(errors).length > 0) {
+    return res.render("addform", { 
+      errors, 
+      formdata: req.body,
+      selectedEducation: req.body.category === "Education" ? "selected" : "",
+      selectedHealth: req.body.category === "Health" ? "selected" : "",
+      selectedSocial: req.body.category === "Social" ? "selected" : "",
+      selectedWork: req.body.category === "Work" ? "selected" : "",
+      selectedPersonal: req.body.category === "Personal" ? "selected" : "",
+      selectedTravel: req.body.category === "Travel" ? "selected" : "",
+      selectedShopping: req.body.category === "Shopping" ? "selected" : "",
+      selectedFamily: req.body.category === "Family" ? "selected" : "",
+      selectedHigh: req.body.priority === "High" ? "selected" : "",
+      selectedMedium: req.body.priority === "Medium" ? "selected" : "",
+      selectedLow: req.body.priority === "Low" ? "selected" : ""
+    });
+  }
+  
+  //add the task if validation pass
   await Model.addTask(req.body);
-  const categorizedTasks = await Model.getAllTasks();
-  //redirect to the main page after updating the task
   res.redirect("/");
 });
 
 //navigate to addform page to create task
 app.get('/addform', (req, res) => {
-  res.render('addform');
+  res.render('addform', {
+    selectedEducation: "",
+    selectedHealth: "",
+    selectedSocial: "",
+    selectedWork: "",
+    selectedPersonal: "",
+    selectedTravel: "",
+    selectedShopping: "",
+    selectedFamily: "",
+    selectedHigh: "",
+    selectedMedium: "",
+    selectedLow: "",
+  });
 });
 
 //update task
